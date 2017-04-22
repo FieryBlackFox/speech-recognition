@@ -1,6 +1,8 @@
 #ifndef WAVEHEADER_H_
 #define WAVEHEADER_H_
-
+/*
+http://audiocoding.ru/article/2008/05/22/wav-file-structure.html
+*/
 struct WaveHeader {
 	char riff[4];
 	unsigned long chunkSize;

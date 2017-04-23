@@ -6,6 +6,7 @@
 #include <string>
 
 #include"WaveHeader.h"
+#include<vector>
 
 /*
 * WaveData
@@ -14,17 +15,17 @@ class WaveData
 {
 	WaveHeader header;
 	int* rawData;
-	double* normalizedData;
+	std::vector<double> normalizedData;
 
 	int maxVal;
 	int minVal;
 	int numberOfSamples;
 
-	WaveData(WaveHeader header) 
+	WaveData(WaveHeader header) : normalizedData(0)
 	{
 		this->header = header;
 		this->rawData = NULL;
-		this->normalizedData = NULL;
+		//this->normalizedData = NULL;
 
 		this->maxVal = 0;
 		this->minVal = 0;
@@ -39,9 +40,9 @@ public:
 		if (this->rawData != NULL) {
 			delete[] this->rawData;
 		}
-		if (this->normalizedData != NULL) {
-			delete[] this->normalizedData;
-		}
+		/*if (this->normalizedData != NULL) {
+			delete this->normalizedData;
+		}*/
 	}
 
 	static WaveData* readFromFile(const std::string& file);
@@ -81,7 +82,7 @@ public:
 	{ 
 		return rawData; 
 	}
-	const double* getNormalizedData() const 
+	const std::vector<double> getNormalizedData() const 
 	{
 		return normalizedData; 
 	}

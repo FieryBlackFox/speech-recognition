@@ -38,7 +38,7 @@ WaveData* WaveData::readFromFile(const std::string& file)
 bool WaveData::checkHeader(const WaveHeader& waveHeader) {
 
 	if ((strncmp(waveHeader.chunkId, "RIFF", sizeof(waveHeader.chunkId) != 0))
-		|| (strncmp(waveHeader.format, "Wave", sizeof(waveHeader.format)) != 0))
+		|| (strncmp(waveHeader.format, "WAVE", sizeof(waveHeader.format)) != 0))
 	{
 		fprintf(stderr, "Invalid RIFF/Wave format\n");
 		return false;
@@ -111,7 +111,7 @@ void WaveData::readData(std::fstream& fs, const WaveHeader& waveHeader, WaveData
 	assert(sampleNumber > 0);
 	sampleNumber++;
 
-	waveFile.normalizedData = new double[sampleNumber];
+	waveFile.normalizedData.resize(sampleNumber);
 	double maxAbs = fmax(fabs(minValue), fabs(maxValue));
 
 	for (int i = 0; i < sampleNumber; i++) 

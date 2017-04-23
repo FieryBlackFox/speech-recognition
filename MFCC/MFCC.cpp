@@ -140,7 +140,15 @@ std::vector<double> MFCC::computeMFCC(std::vector<double> frame, int frequency, 
 		frameC[i] = complexD(frame[i], 0);
 	}
 
-	std::vector<double> spectrum = windowHamming(FFT(frameC));
+	int n = (int)std::ceil(std::log2(frameLength));
+	int maxLenght = (int)std::pow(2, n);
+	frameC.resize(maxLenght, complexD(0, 0));
+
+	frameC = FFT(frameC);
+	//frameC.resize(frameLength);
+	std::vector<double> spectrum = windowHamming(frameC);
+
+	frameLength = maxLenght;
 	std::vector<std::vector<double> > melFilters = getMelFilters(mfccCount, frameLength, frequency, frequencyMin, frequencyMax);
 	std::vector<double> logPower = logEnergySpectrum(spectrum, melFilters, mfccCount);
 	std::vector<double> mfcc = DCT(logPower);

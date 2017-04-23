@@ -7,6 +7,9 @@
 
 #include"WaveHeader.h"
 
+/*
+* WaveData
+*/
 class WaveData 
 {
 	WaveHeader header;
@@ -17,7 +20,8 @@ class WaveData
 	int minVal;
 	int numberOfSamples;
 
-	WaveData(WaveHeader header) {
+	WaveData(WaveHeader header) 
+	{
 		this->header = header;
 		this->rawData = NULL;
 		this->normalizedData = NULL;

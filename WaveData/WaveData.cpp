@@ -37,8 +37,8 @@ WaveData* WaveData::readFromFile(const std::string& file)
 
 bool WaveData::checkHeader(const WaveHeader& waveHeader) {
 
-	if ((strncmp(waveHeader.riff, "RIFF", sizeof(waveHeader.riff) != 0))
-		|| (strncmp(waveHeader.wave, "Wave", sizeof(waveHeader.wave)) != 0))
+	if ((strncmp(waveHeader.chunkId, "RIFF", sizeof(waveHeader.chunkId) != 0))
+		|| (strncmp(waveHeader.format, "Wave", sizeof(waveHeader.format)) != 0))
 	{
 		fprintf(stderr, "Invalid RIFF/Wave format\n");
 		return false;
@@ -50,13 +50,13 @@ bool WaveData::checkHeader(const WaveHeader& waveHeader) {
 		return false;
 	}
 
-	if (waveHeader.numOfChan > 2) 
+	if (waveHeader.numChannels > 2)
 	{
 		fprintf(stderr, "Invalid Wave format: only 1 or 2 channels audio is supported\n");
 		return false;
 	}
 
-	unsigned long bitsPerChannel = waveHeader.bitsPerSample / waveHeader.numOfChan;
+	unsigned long bitsPerChannel = waveHeader.bitsPerSample / waveHeader.numChannels;
 	if (bitsPerChannel != 16) 
 	{
 		fprintf(stderr, "Invalid Wave format: only 16-bit per channel is supported\n");
@@ -79,14 +79,14 @@ void WaveData::readData(std::fstream& fs, const WaveHeader& waveHeader, WaveData
 	int value16, valueLeft16, valueRight16;
 
 	int bytesPerSample = static_cast<int>(waveHeader.bitsPerSample / 8);
-	unsigned long numberOfSamplesXChannels = waveHeader.subchunk2Size / (waveHeader.numOfChan * bytesPerSample);
+	unsigned long numberOfSamplesXChannels = waveHeader.subchunk2Size / (waveHeader.numChannels * bytesPerSample);
 
 	waveFile.rawData = new int[numberOfSamplesXChannels];
 
 	int sampleNumber;
 	for (sampleNumber = 0; sampleNumber < numberOfSamplesXChannels && !fs.eof(); sampleNumber++) 
 	{
-		if (waveHeader.numOfChan == 1) 
+		if (waveHeader.numChannels == 1) 
 		{
 			fs.read((char*)(&value16), sizeof(int16_t));
 			value = static_cast<int>(value16);
@@ -114,7 +114,7 @@ void WaveData::readData(std::fstream& fs, const WaveHeader& waveHeader, WaveData
 	waveFile.normalizedData = new double[sampleNumber];
 	double maxAbs = fmax(fabs(minValue), fabs(maxValue));
 
-	for (uint32_t i = 0; i < sampleNumber; i++) 
+	for (int i = 0; i < sampleNumber; i++) 
 	{
 		waveFile.normalizedData[i] = static_cast<double>(waveFile.rawData[i]) / maxAbs;
 	}
